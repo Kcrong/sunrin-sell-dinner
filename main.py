@@ -49,7 +49,7 @@ def get_html(url):
     return html_data
 
 
-class Suppress:
+class Ignore:
     def __init__(self, *exceptions):
         self._exc = exceptions
 
@@ -237,7 +237,7 @@ def sell_dinner():
 
 def check_buy_message(content):
     data = content.split()
-    with Suppress(NotFound):
+    with Ignore(NotFound):
         if data[-1] == '원' and len(data) == 3:
             return Dinner.query.filter(User.name == data[0] and Dinner.price == data[1]).first_or_404()
     return False
@@ -282,7 +282,7 @@ def auto_message():
 @app.route('/friend', methods=['POST'])
 def friend():
     db.session.add(User(request.form['user_key']))
-    with Suppress(IntegrityError):
+    with Ignore(IntegrityError):
         db.session.commit()
 
     return "SUCCESS"
